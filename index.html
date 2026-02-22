@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0c">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Monty Motions — AI-powered cinematic video production. Stunning ads, reels, and brand films delivered in days.">
+<title>Monty Motions — AI-Powered Video Production</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   CSS VARIABLES & RESET
+   ============================================ */
+:root {
+  --bg-primary: #0a0a0c;
+  --bg-secondary: #111115;
+  --bg-card: #16161b;
+  --bg-card-hover: #1c1c22;
+  --accent-gold: #c8a44e;
+  --accent-gold-light: #e0c575;
+  --accent-gold-dim: rgba(200,164,78,0.15);
+  --accent-warm: #d4622a;
+  --text-primary: #eee9df;
+  --text-secondary: #9a9590;
+  --text-muted: #5c5855;
+  --border-subtle: rgba(200,164,78,0.12);
+  --border-medium: rgba(200,164,78,0.25);
+  --gradient-gold: linear-gradient(135deg, #c8a44e, #e0c575);
+  --shadow-glow: 0 0 40px rgba(200,164,78,0.08);
+  --shadow-card: 0 4px 24px rgba(0,0,0,0.4);
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-accent: 'Playfair Display', serif;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --max-width: 1200px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Mobile safe areas */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 72px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-top: var(--safe-top);
+}
+
+::selection {
+  background: var(--accent-gold);
+  color: var(--bg-primary);
+}
+
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+button { -webkit-tap-highlight-color: transparent; }
+
+/* ============================================
+   GRAIN OVERLAY
+   ============================================ */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* ============================================
+   UTILITY
+   ============================================ */
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+  padding-left: max(20px, var(--safe-left));
+  padding-right: max(20px, var(--safe-right));
+}
+.section-pad { padding: 80px 0; }
+.text-gold { color: var(--accent-gold); }
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.animate-on-scroll.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================
+   STICKY NAV — MOBILE OPTIMIZED
+   ============================================ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(10,10,12,0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.nav-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.nav-logo img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: color var(--transition);
+  position: relative;
+}
+.nav-links a:hover { color: var(--accent-gold); }
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--accent-gold);
+  transition: width var(--transition);
+}
+.nav-links a:hover::after { width: 100%; }
+.nav-cta-group { display: flex; gap: 10px; align-items: center; }
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 10px;
+  background: none;
+  border: none;
+  z-index: 1001;
+}
+.hamburger span {
+  width: 22px;
+  height: 2px;
+  background: var(--text-primary);
+  transition: var(--transition);
+  display: block;
+}
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* Mobile Nav Overlay */
+.mobile-nav-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10,10,12,0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  z-index: 999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 80px 32px 40px;
+}
+.mobile-nav-overlay.open { display: flex; }
+.mobile-nav-overlay a {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 3px;
+  color: var(--text-secondary);
+  padding: 12px 0;
+  transition: color var(--transition);
+}
+.mobile-nav-overlay a:hover { color: var(--accent-gold); }
+.mobile-nav-ctas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 300px;
+  margin-top: 24px;
+}
+.mobile-nav-ctas .btn { width: 100%; justify-content: center; text-align: center; }
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+  white-space: nowrap;
+  touch-action: manipulation;
+}
+.btn-primary {
+  background: var(--gradient-gold);
+  color: var(--bg-primary);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(200,164,78,0.3);
+}
+.btn-outline {
+  background: transparent;
+  color: var(--accent-gold);
+  border: 1px solid var(--border-medium);
+}
+.btn-outline:hover {
+  background: var(--accent-gold-dim);
+  border-color: var(--accent-gold);
+}
+.btn-lg {
+  padding: 16px 36px;
+  font-size: 0.9rem;
+}
+
+/* Mobile: larger touch targets */
+@media (hover: none) {
+  .btn { min-height: 48px; }
+  .btn-lg { min-height: 52px; }
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh; /* dynamic viewport height for mobile */
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding-top: 64px;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(200,164,78,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(212,98,42,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 820px;
+  padding: 40px 0;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  margin-bottom: 20px;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background: var(--accent-gold);
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 8vw, 6.5rem);
+  line-height: 0.95;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+  animation: fadeUp 0.8s ease 0.15s both;
+}
+.hero h1 em {
+  font-family: var(--font-accent);
+  font-style: italic;
+  color: var(--accent-gold);
+  font-weight: 400;
+}
+.hero-sub {
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-width: 540px;
+  margin-bottom: 14px;
+  animation: fadeUp 0.8s ease 0.3s both;
+}
+.hero-social-proof {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+  animation: fadeUp 0.8s ease 0.4s both;
+}
+.hero-social-proof strong { color: var(--text-secondary); }
+.hero-ctas {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  animation: fadeUp 0.8s ease 0.5s both;
+}
+
+/* Floating frame decoration */
+.hero-frame {
+  position: absolute;
+  right: 4%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 340px;
+  height: 460px;
+  z-index: 1;
+}
+.hero-frame-inner {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(22,22,27,0.8), rgba(10,10,12,0.6));
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  animation: float 6s ease-in-out infinite;
+}
+.hero-frame-inner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 38px;
+  background: rgba(200,164,78,0.05);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.frame-dots {
+  position: absolute;
+  top: 13px; left: 14px;
+  display: flex;
+  gap: 6px;
+}
+.frame-dots span {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+.frame-dots span:first-child { background: var(--accent-warm); }
+.frame-dots span:nth-child(2) { background: var(--accent-gold); }
+.frame-content {
+  padding: 52px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: calc(100% - 38px);
+}
+.frame-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--accent-gold-dim);
+  animation: pulse 3s ease-in-out infinite;
+}
+.frame-bar:nth-child(2) { width: 75%; animation-delay: 0.5s; }
+.frame-bar:nth-child(3) { width: 50%; animation-delay: 1s; }
+.frame-preview {
+  flex: 1;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, rgba(200,164,78,0.08), rgba(212,98,42,0.05));
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+.frame-play {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+}
+.frame-play::after {
+  content: '';
+  width: 0; height: 0;
+  border-left: 12px solid var(--accent-gold);
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  margin-left: 3px;
+}
+
+/* ============================================
+   HOW IT WORKS
+   ============================================ */
+.how-it-works { background: var(--bg-primary); }
+.section-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.section-eyebrow {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  margin-bottom: 14px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+}
+.section-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  position: relative;
+}
+.steps-grid::before {
+  content: '';
+  position: absolute;
+  top: 44px;
+  left: 16%; right: 16%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-medium), transparent);
+}
+.step-card {
+  text-align: center;
+  padding: 32px 20px;
+  position: relative;
+}
+.step-number {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  border: 1px solid var(--border-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--accent-gold);
+  margin: 0 auto 20px;
+  background: var(--bg-primary);
+  position: relative;
+  z-index: 1;
+}
+.step-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+.step-card p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* ============================================
+   PORTFOLIO
+   ============================================ */
+.portfolio { background: var(--bg-secondary); }
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.portfolio-item {
+  position: relative;
+  aspect-ratio: 16/10;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  transition: all var(--transition);
+}
+.portfolio-item:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-glow);
+}
+.portfolio-thumb {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, rgba(200,164,78,0.05), rgba(212,98,42,0.03));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.portfolio-thumb svg { width: 40px; height: 40px; opacity: 0.2; }
+.portfolio-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 16px;
+  background: linear-gradient(to top, rgba(10,10,12,0.95), transparent);
+  transform: translateY(8px);
+  opacity: 0;
+  transition: all var(--transition);
+}
+.portfolio-item:hover .portfolio-overlay,
+.portfolio-item:active .portfolio-overlay {
+  transform: translateY(0);
+  opacity: 1;
+}
+.portfolio-overlay h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 3px; }
+.portfolio-overlay span {
+  font-size: 0.7rem;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ============================================
+   CONFIGURATOR
+   ============================================ */
+.configurator { background: var(--bg-primary); }
+.config-card {
+  max-width: 760px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+}
+.config-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gradient-gold);
+}
+.config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.config-field { display: flex; flex-direction: column; gap: 6px; }
+.config-field.full-width { grid-column: 1 / -1; }
+.config-field label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.config-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 14px 40px 14px 14px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: border-color var(--transition);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%239a9590' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  min-height: 48px; /* touch-friendly */
+}
+.config-field select:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+}
+
+/* Price display */
+.config-price-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-top: 1px solid var(--border-subtle);
+  margin-bottom: 20px;
+}
+.config-price-label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+.config-price-label span {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.config-price {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  color: var(--accent-gold);
+  letter-spacing: 1px;
+}
+.config-price .currency {
+  font-size: 1.3rem;
+  vertical-align: top;
+  margin-right: 2px;
+  opacity: 0.7;
+}
+.config-cta-row {
+  display: flex;
+  gap: 12px;
+}
+.config-cta-row .btn { flex: 1; justify-content: center; text-align: center; }
+
+/* ============================================
+   PRICING SECTION
+   ============================================ */
+.pricing { background: var(--bg-secondary); }
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+.price-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 36px 28px;
+  position: relative;
+  transition: all var(--transition);
+}
+.price-card:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-glow);
+}
+.price-card.featured {
+  border-color: var(--accent-gold);
+  background: linear-gradient(180deg, rgba(200,164,78,0.06) 0%, var(--bg-card) 40%);
+}
+.price-card.featured::before {
+  content: 'MOST POPULAR';
+  position: absolute;
+  top: -1px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--gradient-gold);
+  color: var(--bg-primary);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 5px 18px;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+.price-tier {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  margin-bottom: 6px;
+}
+.price-name {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.price-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.55;
+}
+.price-amount {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.price-amount .from {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-right: 4px;
+}
+.price-note {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+.price-divider {
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: 20px 0;
+}
+.price-features { list-style: none; margin-bottom: 28px; }
+.price-features li {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  padding: 7px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.price-features li::before {
+  content: '✓';
+  color: var(--accent-gold);
+  font-weight: 700;
+  font-size: 0.78rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.price-card .btn { width: 100%; justify-content: center; }
+
+/* Comparison table */
+.pricing-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 40px;
+  border-radius: var(--radius-md);
+}
+.pricing-table {
+  width: 100%;
+  min-width: 580px;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+.pricing-table th, .pricing-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.pricing-table thead th {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  background: var(--bg-card);
+  position: sticky;
+  top: 0;
+}
+.pricing-table td { color: var(--text-secondary); }
+.pricing-table td:first-child { color: var(--text-primary); font-weight: 500; }
+.check-yes { color: var(--accent-gold); }
+.check-no { color: var(--text-muted); }
+
+/* Add-ons */
+.addons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 40px;
+}
+.addon-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  transition: all var(--transition);
+}
+.addon-card:hover { border-color: var(--border-medium); }
+.addon-card h4 { font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; }
+.addon-card p { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5; }
+.addon-price {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--accent-gold);
+}
+
+/* ============================================
+   PAYPAL CHECKOUT
+   ============================================ */
+.checkout { background: var(--bg-primary); }
+.checkout-card {
+  max-width: 520px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+  text-align: center;
+}
+.checkout-icon {
+  width: 56px; height: 56px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: var(--accent-gold-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.checkout-icon svg { width: 24px; height: 24px; fill: var(--accent-gold); }
+.checkout-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.checkout-card > p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin-bottom: 28px;
+}
+.paypal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 16px 28px;
+  background: #0070ba;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  min-height: 52px;
+}
+.paypal-btn:hover {
+  background: #005ea6;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,112,186,0.3);
+}
+.paypal-btn svg { width: 18px; height: 18px; }
+.checkout-microcopy {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 14px;
+  line-height: 1.6;
+}
+.checkout-note {
+  margin-top: 20px;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(200,164,78,0.05);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: left;
+  line-height: 1.6;
+}
+.checkout-note strong { color: var(--accent-gold); }
+
+/* ============================================
+   FAQ
+   ============================================ */
+.faq { background: var(--bg-secondary); }
+.faq-list { max-width: 680px; margin: 0 auto; }
+.faq-item { border-bottom: 1px solid var(--border-subtle); }
+.faq-question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 0;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: color var(--transition);
+  min-height: 56px;
+}
+.faq-question:hover { color: var(--accent-gold); }
+.faq-icon {
+  width: 24px; height: 24px;
+  flex-shrink: 0;
+  position: relative;
+}
+.faq-icon::before, .faq-icon::after {
+  content: '';
+  position: absolute;
+  background: var(--accent-gold);
+  transition: transform var(--transition);
+}
+.faq-icon::before {
+  width: 14px; height: 1.5px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+.faq-icon::after {
+  width: 1.5px; height: 14px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+.faq-item.active .faq-icon::after { transform: translate(-50%, -50%) rotate(90deg); opacity: 0; }
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.faq-answer-inner {
+  padding: 0 0 20px 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* ============================================
+   FINAL CTA
+   ============================================ */
+.final-cta {
+  background: var(--bg-primary);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.final-cta::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(200,164,78,0.06), transparent);
+  pointer-events: none;
+}
+.final-cta h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+  position: relative;
+}
+.final-cta h2 em {
+  font-family: var(--font-accent);
+  font-style: italic;
+  color: var(--accent-gold);
+  font-weight: 400;
+}
+.final-cta p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  max-width: 460px;
+  margin: 0 auto 36px;
+  position: relative;
+}
+.final-cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+/* ============================================
+   NICHE VARIATIONS
+   ============================================ */
+.niche-section { background: var(--bg-primary); border-top: 1px solid var(--border-subtle); }
+.niche-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.niche-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 32px 24px;
+  transition: all var(--transition);
+}
+.niche-card:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-3px);
+}
+.niche-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  background: var(--accent-gold-dim);
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+.niche-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  line-height: 1.15;
+}
+.niche-card > p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+  line-height: 1.55;
+}
+.niche-features { list-style: none; }
+.niche-features li {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  padding: 5px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.niche-features li::before {
+  content: '→';
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-subtle);
+  padding: 40px 0 32px;
+  padding-bottom: max(32px, var(--safe-bottom));
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+}
+.footer-brand img { width: 28px; height: 28px; object-fit: contain; border-radius: 3px; }
+.footer-copy { font-size: 0.72rem; color: var(--text-muted); }
+.footer-links {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+}
+.footer-links a {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  transition: color var(--transition);
+}
+.footer-links a:hover { color: var(--accent-gold); }
+
+/* ============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .hero-frame { display: none; }
+  .hero-content { max-width: 100%; }
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .niche-grid {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav-cta-group .btn-outline { display: none; }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .section-pad { padding: 60px 0; }
+  .nav-inner { height: 60px; }
+  html { scroll-padding-top: 60px; }
+  .hero { padding-top: 60px; }
+  .hero-content { padding: 24px 0; }
+  .hero h1 { font-size: clamp(2.4rem, 10vw, 4.5rem); }
+  .hero-ctas {
+    flex-direction: column;
+    width: 100%;
+  }
+  .hero-ctas .btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+  .steps-grid {
+    grid-template-columns: 1fr;
+    max-width: 380px;
+    margin: 0 auto;
+    gap: 8px;
+  }
+  .steps-grid::before { display: none; }
+  .step-card { padding: 24px 16px; }
+  .portfolio-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .portfolio-overlay { opacity: 1; transform: translateY(0); } /* always show on mobile */
+  .config-grid { grid-template-columns: 1fr; }
+  .config-card { padding: 28px 20px; }
+  .config-cta-row { flex-direction: column; }
+  .config-price { font-size: 2.2rem; }
+  .checkout-card { padding: 32px 20px; }
+  .section-header { margin-bottom: 40px; }
+  .final-cta-buttons { flex-direction: column; align-items: center; }
+  .final-cta-buttons .btn { width: 100%; max-width: 340px; justify-content: center; }
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+  .footer-links { justify-content: center; }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+  .portfolio-grid { grid-template-columns: 1fr; }
+  .pricing-table { font-size: 0.72rem; }
+  .pricing-table th, .pricing-table td { padding: 10px 10px; }
+  .addons-grid { grid-template-columns: 1fr; }
+  .hero-eyebrow { font-size: 0.65rem; letter-spacing: 2px; }
+  .hero-sub { font-size: 0.92rem; }
+  .hero-social-proof { font-size: 0.72rem; }
+  .nav-logo { font-size: 1rem; letter-spacing: 1px; }
+  .nav-logo img { width: 30px; height: 30px; }
+  .price-card { padding: 28px 20px; }
+}
+
+/* Extra small (iPhone SE) */
+@media (max-width: 375px) {
+  .hero h1 { font-size: 2.2rem; }
+  .section-title { font-size: 1.6rem; }
+  .config-price { font-size: 2rem; }
+  .btn-lg { padding: 14px 24px; font-size: 0.82rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      MONTY MOTIONS
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how-it-works">Process</a></li>
+      <li><a href="#portfolio">Work</a></li>
+      <li><a href="#configurator">Build</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-cta-group">
+      <a href="mailto:hello@montymotions.com" class="btn btn-primary" style="padding:9px 18px;font-size:0.75rem;">Book a Call</a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Nav Overlay -->
+<div class="mobile-nav-overlay" id="mobileNav">
+  <a href="#how-it-works" class="mobile-nav-link">Process</a>
+  <a href="#portfolio" class="mobile-nav-link">Work</a>
+  <a href="#configurator" class="mobile-nav-link">Build</a>
+  <a href="#pricing" class="mobile-nav-link">Pricing</a>
+  <a href="#faq" class="mobile-nav-link">FAQ</a>
+  <div class="mobile-nav-ctas">
+    <a href="#configurator" class="btn btn-primary">Build Your Video</a>
+    <a href="mailto:hello@montymotions.com" class="btn btn-outline">Book a Call</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow">AI-Powered Video Production</div>
+      <h1>YOUR VISION.<br>SET IN <em>Motion.</em></h1>
+      <p class="hero-sub">Cinematic video production powered by cutting-edge AI. From concept to final cut — stunning ads, reels, and brand films delivered in days, not weeks.</p>
+      <p class="hero-social-proof"><strong>50+</strong> videos delivered &nbsp;·&nbsp; <strong>4.9★</strong> avg. client rating &nbsp;·&nbsp; <strong>48hr</strong> rush turnaround</p>
+      <div class="hero-ctas">
+        <a href="#configurator" class="btn btn-primary btn-lg">Build Your Video →</a>
+        <a href="#portfolio" class="btn btn-outline btn-lg">See Our Work</a>
+      </div>
+    </div>
+    <div class="hero-frame" aria-hidden="true">
+      <div class="hero-frame-inner">
+        <div class="frame-dots"><span></span><span></span><span></span></div>
+        <div class="frame-content">
+          <div class="frame-bar" style="width:90%"></div>
+          <div class="frame-bar"></div>
+          <div class="frame-bar"></div>
+          <div class="frame-preview">
+            <div class="frame-play"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works section-pad" id="how-it-works">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-eyebrow">The Process</div>
+      <h2 class="section-title">THREE STEPS. ZERO HASSLE.</h2>
+      <p class="section-subtitle">We've stripped the production process down to its essentials so you get cinema-quality video without the overhead.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card animate-on-scroll">
+        <div class="step-number">01</div>
+        <h3>BRIEF & BUILD</h3>
+        <p>Use our configurator to select your video type, style, and length — or schedule a 15-minute Zoom call. We handle the rest.</p>
+      </div>
+      <div class="step-card animate-on-scroll">
+        <div class="step-number">02</div>
+        <h3>AI + ARTISTRY</h3>
+        <p>Our AI pipeline generates cinematic visuals, then our editors refine every frame. Technology meets taste.</p>
+      </div>
+      <div class="step-card animate-on-scroll">
+        <div class="step-number">03</div>
+        <h3>DELIVER & DEPLOY</h3>
+        <p>Receive your final video in all formats — ready for social, web, or broadcast. Revisions included.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="portfolio section-pad" id="portfolio">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-eyebrow">Selected Work</div>
+      <h2 class="section-title">FRAMES THAT MOVE AUDIENCES</h2>
+      <p class="section-subtitle">A curated selection of recent productions across ads, brand films, and social content.</p>
+    </div>
+    <div class="portfolio-grid">
+      <div class="portfolio-item animate-on-scroll">
+        <div class="portfolio-thumb"><svg viewBox="0 0 48 48" fill="none"><polygon points="18,14 18,34 34,24" fill="#c8a44e" opacity="0.3"/></svg></div>
+        <div class="portfolio-overlay"><h4>Luxe Fragrance — Brand Film</h4><span>Cinematic • 90s</span></div>
+      </div>
+      <div class="portfolio-item animate-on-scroll">
+        <div class="portfolio-thumb"><svg viewBox="0 0 48 48" fill="none"><polygon points="18,14 18,34 34,24" fill="#c8a44e" opacity="0.3"/></svg></div>
+        <div class="portfolio-overlay"><h4>VITRA — Product Explainer</h4><span>Clean Commercial • 60s</span></div>
+      </div>
+      <div class="portfolio-item animate-on-scroll">
+        <div class="portfolio-thumb"><svg viewBox="0 0 48 48" fill="none"><polygon points="18,14 18,34 34,24" fill="#c8a44e" opacity="0.3"/></svg></div>
+        <div class="portfolio-overlay"><h4>Nova — SaaS Launch Reel</h4><span>Cyberpunk • 30s</span></div>
+      </div>
+      <div class="portfolio-item animate-on-scroll">
+        <div class="portfolio-thumb"><svg viewBox="0 0 48 48" fill="none"><polygon points="18,14 18,34 34,24" fill="#c8a44e" opacity="0.3"/></svg></div>
+        <div class="portfolio-overlay"><h4>Kinetic Fitness — Instagram Ads</h4><span>Documentary • 15s</span></div>
+      </div>
+      <div class="portfolio-item animate-on-scroll">
+        <div class="portfolio-thumb"><svg viewBox="0 0 48 48" fill="none"><polygon points="18,14 18,34 34,24" fill="#c8a44e" opacity="0.3"/></svg></div>
+        <div class="portfolio-overlay"><h4>Archform — Real Estate Tour</h4><span>Luxury Realism • 2min</span></div>
+      </div>
+      <div class="portfolio-item animate-on-scroll">
+        <div class="portfolio-thumb"><svg viewBox="0 0 48 48" fill="none"><polygon points="18,14 18,34 34,24" fill="#c8a44e" opacity="0.3"/></svg></div>
+        <div class="portfolio-overlay"><h4>Anime Capsule — Music Visual</h4><span>Anime-Inspired • 3min</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONFIGURATOR -->
+<section class="configurator section-pad" id="configurator">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-eyebrow">Instant Quote</div>
+      <h2 class="section-title">BUILD YOUR VIDEO</h2>
+      <p class="section-subtitle">Configure your project below and get an instant estimate. No calls needed — unless you want one.</p>
+    </div>
+    <div class="config-card animate-on-scroll">
+      <div class="config-grid">
+        <div class="config-field">
+          <label for="videoType">Video Type</label>
+          <select id="videoType">
+            <option value="ad">Ad / Commercial</option>
+            <option value="reel">Reel / Short</option>
+            <option value="youtube">YouTube Intro</option>
+            <option value="explainer">Explainer</option>
+            <option value="trailer">Cinematic Trailer</option>
+            <option value="realestate">Real Estate Walkthrough</option>
+            <option value="music">Music Visual</option>
+          </select>
+        </div>
+        <div class="config-field">
+          <label for="videoLength">Length</label>
+          <select id="videoLength">
+            <option value="15">15 seconds</option>
+            <option value="30" selected>30 seconds</option>
+            <option value="60">60 seconds</option>
+            <option value="90">90 seconds</option>
+            <option value="180">2–3 minutes</option>
+          </select>
+        </div>
+        <div class="config-field">
+          <label for="videoQty">Quantity</label>
+          <select id="videoQty">
+            <option value="1">1 video</option>
+            <option value="3">3 videos</option>
+            <option value="5">5 videos</option>
+            <option value="10">10 videos</option>
+          </select>
+        </div>
+        <div class="config-field">
+          <label for="videoStyle">Style</label>
+          <select id="videoStyle">
+            <option value="commercial">Clean Commercial</option>
+            <option value="documentary">Documentary</option>
+            <option value="anime">Anime-Inspired</option>
+            <option value="cyberpunk">Cyberpunk</option>
+            <option value="luxury">Luxury Realism</option>
+          </select>
+        </div>
+        <div class="config-field full-width">
+          <label for="videoSpeed">Delivery Speed</label>
+          <select id="videoSpeed">
+            <option value="standard">Standard (5–7 business days)</option>
+            <option value="rush">Rush (48 hours) — +40%</option>
+          </select>
+        </div>
+      </div>
+      <div class="config-price-display">
+        <div class="config-price-label">Estimated Total <span>Based on your selections</span></div>
+        <div class="config-price"><span class="currency">$</span><span id="dynamicPrice">297</span></div>
+      </div>
+      <div class="config-cta-row">
+        <a href="PAYPAL_LINK_HERE" class="btn btn-primary" id="configPayBtn">Pay & Start Project</a>
+        <a href="mailto:hello@montymotions.com?subject=Custom%20Video%20Quote" class="btn btn-outline">Request Custom Quote</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing section-pad" id="pricing">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-eyebrow">Investment</div>
+      <h2 class="section-title">TRANSPARENT PRICING</h2>
+      <p class="section-subtitle">Choose the tier that fits your project. Every plan includes AI-enhanced production and dedicated support.</p>
+    </div>
+    <div class="pricing-grid">
+      <!-- STARTER -->
+      <div class="price-card animate-on-scroll">
+        <div class="price-tier">Tier 01</div>
+        <div class="price-name">STARTER</div>
+        <p class="price-desc">Perfect for quick social content. One polished video, fast delivery.</p>
+        <div class="price-amount"><span class="from">from</span>$197</div>
+        <p class="price-note">Per video · 15–30s length</p>
+        <hr class="price-divider">
+        <ul class="price-features">
+          <li>1 video (15s or 30s)</li>
+          <li>1 revision round</li>
+          <li>1 aspect ratio (9:16 or 16:9)</li>
+          <li>AI-generated visuals</li>
+          <li>Licensed background music</li>
+          <li>Basic captions / text overlay</li>
+          <li>5–7 day turnaround</li>
+        </ul>
+        <a href="#configurator" class="btn btn-outline">Configure →</a>
+      </div>
+      <!-- PRO -->
+      <div class="price-card featured animate-on-scroll">
+        <div class="price-tier">Tier 02</div>
+        <div class="price-name">PRO</div>
+        <p class="price-desc">The sweet spot. Premium production with flexibility for campaigns.</p>
+        <div class="price-amount"><span class="from">from</span>$497</div>
+        <p class="price-note">Per video · up to 90s</p>
+        <hr class="price-divider">
+        <ul class="price-features">
+          <li>1–5 videos (up to 90s each)</li>
+          <li>2 revision rounds</li>
+          <li>2 aspect ratios included</li>
+          <li>Script assistance & storyboard</li>
+          <li>AI voiceover (or supply your own)</li>
+          <li>Custom sound design</li>
+          <li>Animated captions & lower thirds</li>
+          <li>3–5 day turnaround</li>
+        </ul>
+        <a href="#configurator" class="btn btn-primary">Configure →</a>
+      </div>
+      <!-- STUDIO -->
+      <div class="price-card animate-on-scroll">
+        <div class="price-tier">Tier 03</div>
+        <div class="price-name">STUDIO</div>
+        <p class="price-desc">Full-scale production suite. For brands that demand cinematic excellence.</p>
+        <div class="price-amount"><span class="from">from</span>$997</div>
+        <p class="price-note">Per video · up to 3 min</p>
+        <hr class="price-divider">
+        <ul class="price-features">
+          <li>1–10 videos (up to 3 min each)</li>
+          <li>Unlimited revisions</li>
+          <li>All aspect ratios (9:16, 16:9, 1:1)</li>
+          <li>Full script writing & storyboard</li>
+          <li>Professional or AI voiceover</li>
+          <li>Advanced VFX & motion graphics</li>
+          <li>Custom branding kit integration</li>
+          <li>Stock footage & B-roll sourcing</li>
+          <li>Subtitles (up to 3 languages)</li>
+          <li>Priority 48hr rush available</li>
+        </ul>
+        <a href="#configurator" class="btn btn-outline">Configure →</a>
+      </div>
+    </div>
+
+    <!-- Comparison Table -->
+    <div class="pricing-table-wrapper animate-on-scroll">
+      <table class="pricing-table">
+        <thead>
+          <tr><th>Feature</th><th>Starter</th><th>Pro</th><th>Studio</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Max Video Length</td><td>30s</td><td>90s</td><td>3 min</td></tr>
+          <tr><td>Videos per Order</td><td>1</td><td>1–5</td><td>1–10</td></tr>
+          <tr><td>Revisions</td><td>1 round</td><td>2 rounds</td><td>Unlimited</td></tr>
+          <tr><td>Aspect Ratios</td><td>1</td><td>2</td><td>All (9:16, 16:9, 1:1)</td></tr>
+          <tr><td>Script Assistance</td><td class="check-no">—</td><td class="check-yes">✓</td><td class="check-yes">✓ Full writing</td></tr>
+          <tr><td>Voiceover</td><td class="check-no">—</td><td class="check-yes">AI Voice</td><td class="check-yes">Pro or AI Voice</td></tr>
+          <tr><td>Sound Design</td><td>Music only</td><td class="check-yes">✓ Custom</td><td class="check-yes">✓ Advanced</td></tr>
+          <tr><td>Captions</td><td>Basic</td><td class="check-yes">✓ Animated</td><td class="check-yes">✓ Animated</td></tr>
+          <tr><td>Stock Footage</td><td class="check-no">—</td><td class="check-no">—</td><td class="check-yes">✓ Sourced</td></tr>
+          <tr><td>Custom Branding Kit</td><td class="check-no">—</td><td class="check-no">—</td><td class="check-yes">✓</td></tr>
+          <tr><td>Multi-Language Subs</td><td class="check-no">—</td><td class="check-no">—</td><td class="check-yes">Up to 3</td></tr>
+          <tr><td>VFX / Motion Graphics</td><td class="check-no">—</td><td>Basic</td><td class="check-yes">✓ Advanced</td></tr>
+          <tr><td>Turnaround</td><td>5–7 days</td><td>3–5 days</td><td>3–5 days (48hr rush)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Add-Ons -->
+    <div class="section-header animate-on-scroll" style="margin-top:56px;">
+      <div class="section-eyebrow">Extras</div>
+      <h2 class="section-title" style="font-size:1.6rem;">ADD-ONS</h2>
+    </div>
+    <div class="addons-grid animate-on-scroll">
+      <div class="addon-card"><h4>Rush Delivery (48hr)</h4><p>Jump the queue. Video in 2 business days.</p><div class="addon-price">+40%</div></div>
+      <div class="addon-card"><h4>Extra Revision Round</h4><p>One additional round of feedback-driven edits.</p><div class="addon-price">$75</div></div>
+      <div class="addon-card"><h4>Multi-Language Subtitles</h4><p>Subtitles in up to 5 additional languages.</p><div class="addon-price">$50 / lang</div></div>
+      <div class="addon-card"><h4>Advanced VFX Pack</h4><p>Particle effects, 3D elements, compositing.</p><div class="addon-price">$150+</div></div>
+      <div class="addon-card"><h4>Vertical + Horizontal</h4><p>Get both 9:16 and 16:9 versions.</p><div class="addon-price">+25%</div></div>
+      <div class="addon-card"><h4>Custom Thumbnail</h4><p>Designed cover for YouTube or social.</p><div class="addon-price">$45</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PAYPAL CHECKOUT -->
+<section class="checkout section-pad" id="checkout">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-eyebrow">Secure Payment</div>
+      <h2 class="section-title">READY TO START?</h2>
+    </div>
+    <div class="checkout-card animate-on-scroll">
+      <div class="checkout-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 4H4c-1.1 0-2 .9-2 2v2h20V6c0-1.1-.9-2-2-2zm0 6H2v8c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-8zM6 16h4v2H6v-2z"/></svg>
+      </div>
+      <h3>SECURE CHECKOUT</h3>
+      <p>Complete your payment securely through PayPal. Your project begins the moment your order is confirmed.</p>
+      <a href="PAYPAL_LINK_HERE" class="paypal-btn" id="paypalBtn">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.076 21.337H2.47a.641.641 0 01-.633-.74L4.944 2.99a.773.773 0 01.763-.646h6.435c2.137 0 3.63.56 4.431 1.667.364.504.594 1.082.682 1.72.092.664.048 1.458-.132 2.357l-.006.03v.025c-.532 2.77-2.264 4.47-5.148 5.057-.592.12-1.247.178-1.955.178H8.67a.95.95 0 00-.938.803l-.88 5.578-.025.16-.458 2.907-.02.11z"/></svg>
+        Pay with PayPal — Start My Project
+      </a>
+      <p class="checkout-microcopy">🔒 Encrypted & secure. Pay via PayPal balance, credit, or debit card.</p>
+      <div class="checkout-note">
+        <strong>Payment & Delivery:</strong> Once payment is confirmed, you'll receive a brief intake form via email within 48 hours or receive a refund. Production begins immediately after form submission confirmation and client approval. Standard delivery is 5–7 business days; rush orders deliver within 48 hours. All files are delivered via secure download link.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq section-pad" id="faq">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-eyebrow">Questions</div>
+      <h2 class="section-title">FREQUENTLY ASKED</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item animate-on-scroll">
+        <button class="faq-question" onclick="toggleFaq(this)">What exactly is AI-powered video production?<span class="faq-icon"></span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">We use state-of-the-art generative AI tools to create cinematic visuals, motion graphics, and effects — then layer in professional editing, sound design, and color grading. The result is production-quality video at a fraction of the traditional cost and timeline.</div></div>
+      </div>
+      <div class="faq-item animate-on-scroll">
+        <button class="faq-question" onclick="toggleFaq(this)">How long does delivery take?<span class="faq-icon"></span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Standard turnaround is 5–7 business days from the moment you submit your brief. Pro & Studio tiers get priority at 3–5 days. Rush delivery (48 hours) is available as an add-on across all tiers.</div></div>
+      </div>
+      <div class="faq-item animate-on-scroll">
+        <button class="faq-question" onclick="toggleFaq(this)">Can I request revisions?<span class="faq-icon"></span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Absolutely. Starter includes 1 revision round, Pro includes 2, and Studio comes with unlimited revisions. Additional revision rounds can be purchased as an add-on for $75 each.</div></div>
+      </div>
+      <div class="faq-item animate-on-scroll">
+        <button class="faq-question" onclick="toggleFaq(this)">What file formats do I receive?<span class="faq-icon"></span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">All videos are delivered as high-quality MP4 files optimized for your chosen platform. We can also provide MOV, WebM, or GIF formats upon request. Files are delivered via secure download link.</div></div>
+      </div>
+      <div class="faq-item animate-on-scroll">
+        <button class="faq-question" onclick="toggleFaq(this)">Do I own the final video?<span class="faq-icon"></span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Yes. Upon full payment, you receive complete commercial usage rights to your video. You're free to use it across all platforms, ads, and marketing materials without restrictions.</div></div>
+      </div>
+      <div class="faq-item animate-on-scroll">
+        <button class="faq-question" onclick="toggleFaq(this)">What if I need something not listed?<span class="faq-icon"></span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">We love custom projects. Reach out via email or book a call, and we'll create a tailored proposal within 24 hours. From event recaps to full brand campaigns — if it involves video, we can help.</div></div>
+      </div>
+      <div class="faq-item animate-on-scroll">
+        <button class="faq-question" onclick="toggleFaq(this)">Is this real footage or fully AI-generated?<span class="faq-icon"></span></button>
+        <div class="faq-answer"><div class="faq-answer-inner">It depends on the project. We can produce fully AI-generated content, blend AI visuals with real stock footage, or enhance footage you provide. Our Studio tier includes stock footage sourcing and integration as standard.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta section-pad" id="contact">
+  <div class="container">
+    <h2 class="animate-on-scroll">STOP SCROLLING.<br>START <em>Creating.</em></h2>
+    <p class="animate-on-scroll">Your next video is one conversation away. Let's build something unforgettable.</p>
+    <div class="final-cta-buttons animate-on-scroll">
+      <a href="mailto:hello@montymotions.com?subject=Let's%20Create" class="btn btn-primary btn-lg">Book a Free Call →</a>
+      <a href="#configurator" class="btn btn-outline btn-lg">Get Instant Quote</a>
+    </div>
+  </div>
+</section>
+
+<!-- NICHE VARIATIONS -->
+<section class="niche-section section-pad" id="niches">
+  <div class="container">
+    <div class="section-header animate-on-scroll">
+      <div class="section-eyebrow">Specializations</div>
+      <h2 class="section-title">BUILT FOR YOUR INDUSTRY</h2>
+      <p class="section-subtitle">Tailored video solutions for the industries we know best.</p>
+    </div>
+    <div class="niche-grid">
+      <div class="niche-card animate-on-scroll">
+        <span class="niche-badge">Real Estate</span>
+        <h3>LISTINGS THAT SELL BEFORE THE OPEN HOUSE</h3>
+        <p>AI-enhanced property tours and listing videos that make buyers feel like they've already walked through the door.</p>
+        <ul class="niche-features">
+          <li>Cinematic AI walkthrough animations</li>
+          <li>Aerial & drone-style establishing shots</li>
+          <li>Virtual staging overlays</li>
+          <li>Neighborhood lifestyle B-roll</li>
+          <li>MLS-ready + social-optimized formats</li>
+        </ul>
+      </div>
+      <div class="niche-card animate-on-scroll">
+        <span class="niche-badge">Fitness & Influencers</span>
+        <h3>REELS THAT STOP THE SCROLL AND BUILD THE BRAND</h3>
+        <p>High-energy reels, transformation ads, and brand content that turns followers into clients.</p>
+        <ul class="niche-features">
+          <li>Dynamic motion graphics & text overlays</li>
+          <li>Before/after transition effects</li>
+          <li>Trending audio-synced editing</li>
+          <li>Vertical-first (9:16) optimization</li>
+          <li>Monthly content packages available</li>
+        </ul>
+      </div>
+      <div class="niche-card animate-on-scroll">
+        <span class="niche-badge">SaaS & Startups</span>
+        <h3>EXPLAIN YOUR PRODUCT IN 60 SECONDS FLAT</h3>
+        <p>Crisp explainer videos and product demos that turn complex features into compelling stories.</p>
+        <ul class="niche-features">
+          <li>UI/UX screen flow animations</li>
+          <li>Illustrated feature breakdowns</li>
+          <li>Investor-ready pitch videos</li>
+          <li>Onboarding & tutorial sequences</li>
+          <li>Landing page hero video loops</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <a href="#" class="footer-brand">
+        <img src="data:image/jpeg;base64,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lMfvRGlzaWduYXR1cmV4GXNlbGYjanVtYmY9YzJwYS5zaWduYXR1cmVjYWxnZnNoYTI1NgAAAlFqdW1iAAAAKWp1bWRjMmFzABEAEIAAAKoAOJtxA2MycGEuYXNzZXJ0aW9ucwAAAACcanVtYgAAAChqdW1kY2JvcgARABCAAACqADibcQNjMnBhLmhhc2guZGF0YQAAAABsY2JvcqRqZXhjbHVzaW9uc4GiZXN0YXJ0FGZsZW5ndGgZF4ljYWxnZnNoYTI1NmRoYXNoWCApd16BLMP2IFK7vUzPkEVB48ut5AgxiOLDiTtTT2S6L2NwYWROAAAAAAAAAAAAAAAAAAAAAAGEanVtYgAAAClqdW1kY2JvcgARABCAAACqADibcQNjMnBhLmFjdGlvbnMudjIAAAABU2Nib3KhZ2FjdGlvbnOCo2ZhY3Rpb25sYzJwYS5jcmVhdGVka2Rlc2NyaXB0aW9ueCBDcmVhdGVkIGJ5IEdvb2dsZSBHZW5lcmF0aXZlIEFJLnFkaWdpdGFsU291cmNlVHlwZXhGaHR0cDovL2N2LmlwdGMub3JnL25ld3Njb2Rlcy9kaWdpdGFsc291cmNldHlwZS90cmFpbmVkQWxnb3JpdGhtaWNNZWRpYaNmYWN0aW9ua2MycGEuZWRpdGVka2Rlc2NyaXB0aW9ueChBcHBsaWVkIGltcGVyY2VwdGlibGUgU3ludGhJRCB3YXRlcm1hcmsucWRpZ2l0YWxTb3VyY2VUeXBleEZodHRwOi8vY3YuaXB0Yy5vcmcvbmV3c2NvZGVzL2RpZ2l0YWxzb3VyY2V0eXBlL3RyYWluZWRBbGdvcml0aG1pY01lZGlh/9sAQwAFAwQEBAMFBAQEBQUFBgcMCAcHBwcPCwsJDBEPEhIRDxERExYcFxMUGhURERghGBodHR8fHxMXIiQiHiQcHh8e/9sAQwEFBQUHBgcOCAgOHhQRFB4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4e/8AAEQgAeAB4AwEiAAIRAQMRAf/EABwAAAICAwEBAAAAAAAAAAAAAAACAQMFBgcECP/EADMQAAEEAgEDAwEHAwQDAAAAAAEAAgMEBREGEiExBxNBFBUiIzJRYYFScZEXM0JDJGKS/8QAGgEBAQADAQEAAAAAAAAAAAAAAAEDBAUCBv/EACsRAAICAQIFAgUFAAAAAAAAAAABAhEDBCESMUGx8BNxUWGhwdEFFCKR8f/aAAwDAQACEQMRAD8A+SkIQsxiBCFICAhTpSApAQC6RpPpGkAmkaT6UEIBEJtKNICEIQgBCEIAQhSEABMAhoTgICAEwCkBOAgEARpWAI0oUq0o0riEukBUQlIVpCQhUhWQoTkJSiBCEIQAmaoCuqxGV4aAo2VKwjjc7sAvUynKRsNP+F1v0u9KWZXFM5ByK67FYd0ntwdMRksXZB/1wRju8/v4C6jkvTqtiMC/J0fS+i+hCQZps1kZrFtkfzK6vX0A1o7lo24D4Olzcv6ljhLhW5tQ0smrZ8pOgezyEoGuxX0hyr04qDGfaNvg+Pfj3w+8MjxXLPeWR637nsz9nt137HwuJ5Djgdl/pcPaddrzAzVp5YvY6q4GzM8En22Dv3PnRI7a3m0+shms8ZNPKBroCNL1Wm12zFlZzpI29vccNF5+Xa+B+g86891Vr9VuLcwUVaSkBXEJHBAUkKshXEdlW4ICshIVYUh+UIIhShUAPlbh6XYWDOcrpULUvs1S4y2Zf6IWAukP/wAg/wAlaeFuHp7YMLM/7Z/Fdg7TGa89wN6/ja19S36bozYEnNWd6r84u4rAW+eScbEbWRiDFC3OIoa1TxDDBG3b3uf2c52m7350FifVbJevOOxtTNZjLDEYyzKIoYsLbDWscQSOvp+9vsRtxPcaXkv2cby+XBYR7nvwuOlhMntP0btj2gI6sf7hpLnv8Mbv5XX5c5x3lmcl9PZhE+KCpEJYoXaaw9fdrD8OZph/bff5XzfqLA1Lgt9fkuh15Ynk2Utu7OXemfGuY5Hg5iyVm5kMLdsu+z8I5+hkZ97eXu8srNJ6pNHTiNeT3wPOcZDQhu1X2jYqut+1k8jroflrrSP/AB4f6K0J1sjsND56APpzEcq4tJieQ2scTHjsPEKTLVVuyQxhc6OAfo3to/LtuPYBcjqVqfJPSTlvOLNJtZslG3QxtYd46dWMDpZH/wCzpDtzvLnBXFqpObnJUrX9vzzasTxLh4TgdvjViv6hR8bypbHKclFTndB2aA6Rrds38dJ2N/sunUfQWOX1hn49PlZm8UYPciybXN9yUOe6NkAOun3vca5pGuwYTruFhPV2vZrerdT6URDINbjT+J+X3/ai/N+3Vravxt31P/1SdgYpa319HLT5r6eQn6Nkzmkul359sh33Rvy79SV1JZss8alGSX8b37mqsUVJppvcw8PEuC4LjuEyHNcjyB9jPCSatHiWRdNWs2UxiWQyfncSCehuuyz0voS44nltWtmmz8hxGVbUxsB6WRZFhricNAPdsrmEkDettI/deThc3LJONYuK3FwuxX+okkwUXIS33usv272Bv8hf4Dvu78JIqvO8zg8x9byfj9GePMsy2TkuXjDcpWmEwsL9NIYN+AP212SWXIm6mlv79dtvo/mI4k1y8o9mJ9MODO9SqXCMrZ5O23fxde9FNDJA1kRdVdNKx4cze+ppA14+VguN+n/Fuf17UXBL2UpZClahdYr5ueEg0n9pLALAB+E7u4d/ukfKyv1HqLkvU3Ecx6sDNk58O6y206XoqR1GB8DppiSOnyT2PfY0PhYfh/EOZYTk1Otx6zx/JN5JSt46tfite7Ue0xn3W9YALJA1vYEf5VWSaTbnvS67Wrvt3J6auuHa/wDDnvLI8JDyO/Dxue3YxEcxZUmtdPuysHbrPSAB1HZA+AQsSVuGP9OOVXW+1DSYy03MtwpqyydEoslhf3BGgwNaSXb/AMrGct42ePuhac7gcr7rntP2Zc94xObrYeC0FvnsfB768LoQywtQUrZrPHJLiaNfKEFCzIxgFkcHbmpXDNFYMH4b2PeGgnocOlwAPkkHssaF6aNg1ZffjH47O8biNhh/q/uPj9+/wvM1aaPUHTs6Tx/Iuxmuh5pWY4PacYx1fZVdx7sjH/K1Kf52e/zqjkUfK6mfhyVHG2ce23CKlOOrJ1vEZYW+04jv1ubsu/Uk+VqGGykEFhv1tV9iEbd9yZzJGyE/7ocP+f8Adb7R5NHYoyU38io2a0o0+LLU3tkH6ffiOiR5DvIPdcvJjninxKN/Hn9vv3tnRhOGWFN155y/CNs9M6PqvY4tc4pRr1MNhr/uCefIQdMmpGhruny/wNDsupxYmKlhqnGslyYvwOAhZPloakDYKkcTD1NhO+p8s0j9H7zvnfT37clo88FPHMgynN32Gsb0lmIpkTzD9HTydmn42Bv+VqfNvUa1mcbHhMdXZi8JA8vjpxPLi9/zJK895Hn9T/C0f2+fPPkkr6L6772ZZTxYo8237/gp5vyp2Y9QLHJJ2kGW+LRY0/lAeCGj+wAH8LJ1/VGyzNtuPrv6fq3uknbr35a23ujgP7Nc8nz8AfC5tJK57tkpdldh6LFKKjJclRoR1OSDbizbmcgwt+niPt2tkTYxEQhi+lewMmia8va13V3aQTrYVdnmMlxvLp7cThY5B7Z1H+RhbKH999/A0tU3+6Qle1psd+fG+5PXn57V2N6rc6qNxlPEW6lqXHuwX2ReDHNbJ/vGVr4z47HXY+VbgeeYvj02HpYqtkX42hbnuzSTlnvTTSQuiBAB01oB/XuueEpCvL0eJpro/PuVaqaOhWPUqXI8dxlHLC+3I1MhDZnyFKRsc8zIo3MY7qP/AGtBA2R3AWL9RuWUuR0aMLG2rl2vI90uSuQQxTyscBqMiLs4DW9nv3WnFIfCsNJihJSiuRJanJKLixShQhbRrgmalQEBY1Wse4eCqGp2lQp6BK4/JQHH5KpBTAoLLg5HUqgVO0KWFyQne0u1BKEJJSEoJSkoCClKCUqIgIQhUAhCEBIUgpUICwFMCqgVIKhS3aNqvaNoB9oJSbUEoBiUpKjahCEqEIVAIQhACEIQAhCEAIQhATtG0IQBtQhCAEIQgBCEIAQhCA//2Q==" alt="Monty Motions">
+        MONTY MOTIONS
+      </a>
+      <ul class="footer-links">
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#portfolio">Work</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="mailto:hello@montymotions.com">Contact</a></li>
+      </ul>
+      <p class="footer-copy">&copy; 2026 TCBT LLC. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== EMBED LOGO (base64) =====
+
+// ===== PRICING ENGINE =====
+const BASE_PRICES = {
+  type: { ad: 250, reel: 197, youtube: 220, explainer: 350, trailer: 500, realestate: 400, music: 350 },
+  length: { 15: 0.7, 30: 1.0, 60: 1.5, 90: 2.0, 180: 3.0 },
+  style: { commercial: 1.0, documentary: 1.0, anime: 1.15, cyberpunk: 1.2, luxury: 1.25 },
+  quantity: { 1: 1.0, 3: 0.9, 5: 0.82, 10: 0.75 },
+  speed: { standard: 1.0, rush: 1.4 }
+};
+
+function calculatePrice() {
+  const t = document.getElementById('videoType').value;
+  const l = document.getElementById('videoLength').value;
+  const q = document.getElementById('videoQty').value;
+  const s = document.getElementById('videoStyle').value;
+  const sp = document.getElementById('videoSpeed').value;
+  const ppv = BASE_PRICES.type[t] * BASE_PRICES.length[l] * BASE_PRICES.style[s] * BASE_PRICES.quantity[q] * BASE_PRICES.speed[sp];
+  const total = Math.round(ppv * parseInt(q));
+  document.getElementById('dynamicPrice').textContent = total.toLocaleString();
+}
+['videoType','videoLength','videoQty','videoStyle','videoSpeed'].forEach(id => {
+  document.getElementById(id).addEventListener('change', calculatePrice);
+});
+calculatePrice();
+
+// ===== FAQ ACCORDION =====
+function toggleFaq(btn) {
+  const item = btn.parentElement;
+  const answer = item.querySelector('.faq-answer');
+  const isActive = item.classList.contains('active');
+  document.querySelectorAll('.faq-item.active').forEach(i => {
+    i.classList.remove('active');
+    i.querySelector('.faq-answer').style.maxHeight = '0';
+  });
+  if (!isActive) {
+    item.classList.add('active');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+  }
+}
+
+// ===== SCROLL ANIMATIONS =====
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+// ===== MOBILE NAV =====
+const hamburger = document.getElementById('hamburger');
+const mobileNav = document.getElementById('mobileNav');
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  mobileNav.classList.toggle('open');
+  document.body.style.overflow = mobileNav.classList.contains('open') ? 'hidden' : '';
+});
+
+// Close on link click
+document.querySelectorAll('.mobile-nav-link, .mobile-nav-ctas .btn').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('active');
+    mobileNav.classList.remove('open');
+    document.body.style.overflow = '';
+  });
+});
+
+// ===== NAV BG ON SCROLL =====
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').style.background =
+    window.scrollY > 80 ? 'rgba(10,10,12,0.95)' : 'rgba(10,10,12,0.88)';
+}, { passive: true });
+
+// ===== MOBILE: show portfolio overlays on touch =====
+if ('ontouchstart' in window) {
+  document.querySelectorAll('.portfolio-item').forEach(item => {
+    item.addEventListener('touchstart', () => {}, { passive: true });
+  });
+}
+</script>
+</body>
+</html>
